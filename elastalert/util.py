@@ -2,6 +2,7 @@
 import collections
 import datetime
 import logging
+import json
 import os
 import re
 import sys
@@ -338,6 +339,7 @@ def elasticsearch_client(conf):
         es_conn_conf['headers'] = {"Authorization": "Bearer " + es_conn_conf['es_bearer']}
     if es_conn_conf['es_api_key']:
         es_conn_conf['headers'] = {"Authorization": "ApiKey " + es_conn_conf['es_api_key']}
+    if es_conn_conf['es_custom_key'] = es_conn_conf['es_custom_key']
 
     return ElasticSearchClient(es_conn_conf)
 
@@ -389,7 +391,18 @@ def build_es_conn_config(conf):
         parsed_conf['es_bearer'] = os.environ.get('ES_BEARER')
     elif 'es_bearer' in conf:
         parsed_conf['es_bearer'] = conf['es_bearer']
-
+ 
+    if os.environ.get('ES_CUSTOM_KEY'):
+        if json.loads(os.environ.get('ES_CUSTOM_KEY')):
+            try:
+                print(json.loads(os.environ.get('ES_CUSTOM_KEY')))
+            except json.decoder.JSONDecodeError:
+                raise Exception('Invalid json at ES_CUSTOM_KEY')
+            else:
+                parsed_conf['es_custom_key'] = os.environ.get('ES_CUSTOM_KEY')
+    elif 'es_api_key' in conf:
+        parsed_conf['es_custom_key'] = conf['es_custom_key']
+        
     if 'aws_region' in conf:
         parsed_conf['aws_region'] = conf['aws_region']
 
