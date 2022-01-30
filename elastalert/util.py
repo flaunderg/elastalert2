@@ -339,7 +339,8 @@ def elasticsearch_client(conf):
         es_conn_conf['headers'] = {"Authorization": "Bearer " + es_conn_conf['es_bearer']}
     if es_conn_conf['es_api_key']:
         es_conn_conf['headers'] = {"Authorization": "ApiKey " + es_conn_conf['es_api_key']}
-    if es_conn_conf['es_custom_key'] = es_conn_conf['es_custom_key']
+    if es_conn_conf['es_custom_key']:
+        es_conn_conf['headers'] = es_conn_conf['es_custom_key']
 
     return ElasticSearchClient(es_conn_conf)
 
